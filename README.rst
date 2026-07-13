@@ -46,7 +46,7 @@ Problems can be reported at `our GitHub page <https://github.com/axcore/tartube/
 
 Stable release: **v2.5.231 (24 May 2026)**
 
-Development release: **v2.5.235 (13 Jun 2026)**
+Development release: **v2.5.242 (13 Jul 2026)**
 
 Official packages (also available from the `Github release page <https://github.com/axcore/tartube/releases>`__):
 
@@ -2460,17 +2460,13 @@ A: Click **Edit > System preferences... > Windows > Main window**, and then clic
 
 *Q: I added my YouTube username and password, but I am still seeing authentification errors!*
 
-A: The questioner is talking about the settings in **Edit > General download options... > Advanced > Authentication**.
+A: At the time of writing (July 2026), the correct solution is to log in to **YouTube** in your browser, and then import cookies from that browser.
 
-This is a **youtube-dl** issue. A general solution is described in `this post <https://github.com/ytdl-org/youtube-dl/issues/21313#issuecomment-499496235>`__.
+Click **Edit > General download options... > Files > Cookies**.
 
-The solution describes how to create a cookies.txt file, which can be specified as a download option.
+Then, in the **Browser** box, select your browser (e.g. **Firefox**).
 
-Having created the file, in the same edit window, click the **Name** tab. In the box labelled **Additional download options**, you can add:
-
-**--cookies=YT-cookies.txt**
-
-See also the **Tartube** thread `here <https://github.com/axcore/tartube/issues/68>`__.
+Note that *cookies cannot be imported from Edge, Chrome or Chromium-based browsers at the moment*. You should log in to **YouTube** using a different browser.
 
 7.20 Georestriction workarounds don't work
 ------------------------------------------

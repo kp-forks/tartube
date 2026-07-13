@@ -3370,6 +3370,25 @@ class MainWin(Gtk.ApplicationWindow):
         self.progress_update_label.set_alignment(0, 0.5)
         self.progress_update_label.set_hexpand(False)
 
+        # !!! DEBUG GIT #788
+        if os.name == 'nt':
+
+            css = b"""
+            .treeview-bold GtkLabel {
+                font-weight: 600;
+            }
+            """
+            provider = Gtk.CssProvider()
+            provider.load_from_data(css)
+            Gtk.StyleContext.add_provider_for_screen(
+                Gdk.Screen.get_default(),
+                provider,
+                Gtk.STYLE_PROVIDER_PRIORITY_APPLICATION
+            )
+            self.progress_list_treeview.get_style_context().add_class("treeview-bold")
+            self.results_list_treeview.get_style_context().add_class("treeview-bold")
+        # !!! DEBUG GIT #788
+
 
     def setup_classic_mode_tab(self):
 

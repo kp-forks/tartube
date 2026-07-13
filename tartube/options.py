@@ -889,7 +889,7 @@ class OptionsManager(object):
             'no_clean_info_json': False,
             'no_cookies': False,
             'cookies_from_browser': '',
-            'no_cookies_from_browser': True,
+            'no_cookies_from_browser': False,
             # (Internet Shortcut Options)
             'write_link': False,
             'write_url_link': False,

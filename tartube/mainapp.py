@@ -1263,7 +1263,7 @@ class TartubeApp(Gtk.Application):
 
         # Default invidio.us mirror to use (the original site closed in
         #   September 2020); this value never changes
-        self.default_invidious_mirror = 'yewtu.be'
+        self.default_invidious_mirror = 'inv.nadeko.net'
         # Custom mirror to use (can be set by the user)
         self.custom_invidious_mirror = self.default_invidious_mirror
 
@@ -5554,6 +5554,11 @@ class TartubeApp(Gtk.Application):
             self.ytdlp_filter_options_flag \
             = json_dict['ytdlp_filter_options_flag']
 
+        # v2.5.237: Old Invidious mirror no longer maintained
+        if version < 2005237:
+            if self.custom_invidious_mirror == 'yewtu.be':
+                self.custom_invidious_mirror = self.default_invidious_mirror
+
         # Having loaded the config file, set various file paths...
         if self.data_dir_use_first_flag and self.data_dir_alt_list:
             self.data_dir = self.data_dir_alt_list[0]
@@ -8729,6 +8734,13 @@ class TartubeApp(Gtk.Application):
             for media_data_obj in self.media_reg_dict.values():
                 if isinstance(media_data_obj, media.Video):
                     media_data_obj.author = None
+
+        if version < 2005238:       # v2.5.238
+
+            # This version modifies the default value of an option in
+            #   options.OptionsManager
+            for options_obj in options_obj_list:
+                options_obj.options_dict['no_cookies_from_browser'] = False
 
         # --- Do this last, or the call to .check_integrity_db() fails -------
         # --------------------------------------------------------------------

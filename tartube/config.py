@@ -6345,17 +6345,17 @@ class OptionsEditWin(GenericEditWin):
             entry,
         )
 
+        # (To avoid messing up the neat format of the rows above, add a
+        #   secondary grid, and put the next set of widgets inside it)
+        grid2 = self.add_secondary_grid(grid, 0, 3, grid_width, 1)
+
+        # Cookie options (yt-dlp only)
+        self.add_label(grid2,
+            '<u>' + _('Cookie options') + '</u>' + self.ytdlp_only(),
+            0, 0, 1, 1,
+        )
+
         if not self.app_obj.simple_options_flag:
-
-            # (To avoid messing up the neat format of the rows above, add a
-            #   secondary grid, and put the next set of widgets inside it)
-            grid2 = self.add_secondary_grid(grid, 0, 3, grid_width, 1)
-
-            # Cookie options (yt-dlp only)
-            self.add_label(grid2,
-                '<u>' + _('Cookie options') + '</u>' + self.ytdlp_only(),
-                0, 0, 1, 1,
-            )
 
             checkbutton = self.add_checkbutton(grid2,
                 _('Do not read/dump cookies from/to the cookiejar file'),
@@ -6371,60 +6371,62 @@ class OptionsEditWin(GenericEditWin):
             )
             self.add_tooltip('--no-cookies-from-browser', checkbutton2)
 
-            # (To avoid messing up the neat format of the rows above, add a
-            #   secondary grid, and put the next set of widgets inside it)
-            grid3 = self.add_secondary_grid(grid, 0, 4, grid_width, 1)
+        # (To avoid messing up the neat format of the rows above, add a
+        #   secondary grid, and put the next set of widgets inside it)
+        grid3 = self.add_secondary_grid(grid, 0, 4, grid_width, 1)
 
-            label2 = self.add_label(grid3,
-                _('Retrieve cookies from browser'),
-                0, 0, 1, 1
-            )
-            label2.set_hexpand(False)
+        label2 = self.add_label(grid3,
+            _('Retrieve cookies from browser'),
+            0, 0, 1, 1
+        )
+        label2.set_hexpand(False)
 
-            entry2 = self.add_entry(grid3,
-                None,
-                1, 0, 1, 1,
-            )
-            entry2.set_hexpand(True)
-            entry2.set_editable(False)
-            entry2.set_text(self.retrieve_val('cookies_from_browser'))
+        entry2 = self.add_entry(grid3,
+            None,
+            1, 0, 1, 1,
+        )
+        entry2.set_hexpand(True)
+        entry2.set_editable(False)
+        entry2.set_text(self.retrieve_val('cookies_from_browser'))
 
-            # (To avoid messing up the neat format of the rows above, add a
-            #   secondary grid, and put the next set of widgets inside it)
-            grid4 = self.add_secondary_grid(grid, 0, 5, grid_width, 1)
+        # (To avoid messing up the neat format of the rows above, add a
+        #   secondary grid, and put the next set of widgets inside it)
+        grid4 = self.add_secondary_grid(grid, 0, 5, grid_width, 1)
 
-            self.add_label(grid4,
-                _('Browser'),
-                0, 0, 1, 1
-            )
+        self.add_label(grid4,
+            _('Browser'),
+            0, 0, 1, 1
+        )
 
-            combo_list = [
-                '', 'brave', 'chrome', 'chromium', 'edge', 'firefox', 'opera',
-                'safari', 'vivaldi',
-            ]
-            combo = self.add_combo(grid4,
-                combo_list,
-                None,
-                1, 0, 1, 1
-            )
-            combo.set_active(0)
-            combo.set_hexpand(True)
-            # (Signal connect appears below)
+        combo_list = [
+            '', 'brave', 'chrome', 'chromium', 'edge', 'firefox', 'opera',
+            'safari', 'vivaldi',
+        ]
+        combo = self.add_combo(grid4,
+            combo_list,
+            None,
+            1, 0, 1, 1
+        )
+        combo.set_active(0)
+        combo.set_hexpand(True)
+        # (Signal connect appears below)
 
-            self.add_label(grid4,
-                _('Chromium keyring'),
-                2, 0, 1, 1
-            )
+        self.add_label(grid4,
+            _('Chromium keyring'),
+            2, 0, 1, 1
+        )
 
-            combo_list2 = ['', 'basictext', 'gnomekeyring', 'kwallet']
-            combo2 = self.add_combo(grid4,
-                combo_list2,
-                None,
-                3, 0, 1, 1
-            )
-            combo2.set_active(0)
-            combo2.set_hexpand(True)
-            # (Signal connect appears below)
+        combo_list2 = ['', 'basictext', 'gnomekeyring', 'kwallet']
+        combo2 = self.add_combo(grid4,
+            combo_list2,
+            None,
+            3, 0, 1, 1
+        )
+        combo2.set_active(0)
+        combo2.set_hexpand(True)
+        # (Signal connect appears below)
+
+        if not self.app_obj.simple_options_flag:
 
             # (To avoid messing up the neat format of the rows above, add a
             #   secondary grid, and put the next set of widgets inside it)
@@ -6464,6 +6466,15 @@ class OptionsEditWin(GenericEditWin):
             grid5.attach(reset_button, 3, 1, 1, 1)
             # (Signal connect appears below)
 
+        if self.app_obj.simple_options_flag:
+            self.add_tooltip(
+                '--cookies-from-browser BROWSER[+KEYRING][:PROFILE]',
+                entry2,
+                combo,
+                combo2,
+            )
+
+        else:
             self.add_tooltip(
                 '--cookies-from-browser BROWSER[+KEYRING][:PROFILE]',
                 entry2,
@@ -6473,47 +6484,49 @@ class OptionsEditWin(GenericEditWin):
                 entry4,
             )
 
-            # Set the initial values for those widgets, retrieving them from
-            #   the 'cookies_from_browser' download option
-            match = re.search(
-                r'^([^+:]+)(\+[^+:]+)?(\:.*)?',
-                self.retrieve_val('cookies_from_browser'),
-            )
-            if match:
-                browser = match.groups()[0]
-                keyring = match.groups()[1]
-                profile = match.groups()[2]
+        # Set the initial values for those widgets, retrieving them from
+        #   the 'cookies_from_browser' download option
+        match = re.search(
+            r'^([^+:]+)(\+[^+:]+)?(\:.*)?',
+            self.retrieve_val('cookies_from_browser'),
+        )
+        if match:
+            browser = match.groups()[0]
+            keyring = match.groups()[1]
+            profile = match.groups()[2]
 
-                if browser != '':
+            if browser != '':
 
-                    for i in range(len(combo_list)):
-                        if combo_list[i] == browser:
-                            combo.set_active(i)
+                for i in range(len(combo_list)):
+                    if combo_list[i] == browser:
+                        combo.set_active(i)
+                        break
+
+                if keyring != '' and keyring is not None:
+
+                    # (Remove initial +/: characters)
+                    keyring = keyring[1:]
+
+                    for i in range(len(combo_list2)):
+                        if combo_list2[i] == keyring:
+                            combo2.set_active(i)
                             break
 
-                    if keyring != '' and keyring is not None:
+                if profile != '' and profile is not None:
 
-                        # (Remove initial +/: characters)
-                        keyring = keyring[1:]
+                    # (Remove initial +/: characters)
+                    profile = profile[1:]
 
-                        for i in range(len(combo_list2)):
-                            if combo_list2[i] == keyring:
-                                combo2.set_active(i)
-                                break
+                    # This might be a profile name, or a profile path.
+                    #   Assume it's a name unless the path exists
+                    if not os.path.isfile(profile):
+                        entry3.set_text(profile)
+                    else:
+                        entry4.set_text(profile)
 
-                    if profile != '' and profile is not None:
+        # (Signal connects from above)
+        if not self.app_obj.simple_options_flag:
 
-                        # (Remove initial +/: characters)
-                        profile = profile[1:]
-
-                        # This might be a profile name, or a profile path.
-                        #   Assume it's a name unless the path exists
-                        if not os.path.isfile(profile):
-                            entry3.set_text(profile)
-                        else:
-                            entry4.set_text(profile)
-
-            # (Signal connects from above)
             combo.connect(
                 'changed',
                 self.setup_files_cookies_tab_update,
@@ -6534,6 +6547,7 @@ class OptionsEditWin(GenericEditWin):
                 entry3,
                 entry4,
             )
+
             entry3.connect(
                 'changed',
                 self.on_cookies_ytdlp_entry_changed,
@@ -6562,9 +6576,32 @@ class OptionsEditWin(GenericEditWin):
                 entry4,
             )
 
+        else:
 
-    def setup_files_cookies_tab_update(self, widget, checkbutton, entry,
-    combo, combo2, entry2, entry3):
+            combo.connect(
+                'changed',
+                self.setup_files_cookies_tab_update,
+                None,
+                entry2,
+                combo,
+                combo2,
+                None,
+                None,
+            )
+            combo2.connect(
+                'changed',
+                self.setup_files_cookies_tab_update,
+                None,
+                entry2,
+                combo,
+                combo2,
+                None,
+                None,
+            )
+
+
+    def setup_files_cookies_tab_update(self, widget, checkbutton=None,
+    entry=None, combo=None, combo2=None, entry2=None, entry3=None):
 
         """Called by self.setup_files_cookies_tab() to set the
         'cookies_from_browser' download option, updating several widgets.
@@ -6575,14 +6612,16 @@ class OptionsEditWin(GenericEditWin):
 
             widget (Gtk.Entry or Gtk.Combo): Ignored
 
-            checkbutton (Gtk.CheckButton): The 'Do not load cookies from
-                browser' checkbutton
+            checkbutton (Gtk.CheckButton or None): The 'Do not load cookies
+                from browser' checkbutton
 
             entry (Gtk.Entry): The entry box displaying the download option
 
-            combo, combo2, entry2, entry3 (Gtk.Combo, Gtk.Entry): Widgets whose
-                settings are combined to set the 'cookies_from_browser'
-                download option
+            combo, combo2 (Gtk.Combo): Widgets whose settings are combined to
+                set the 'cookies_from_browser' download option
+
+            entry2, entry3 (Gtk.Entry or None): Widgets whose settings are
+                combined to set the 'cookies_from_browser' download option
 
         """
 
@@ -6603,8 +6642,12 @@ class OptionsEditWin(GenericEditWin):
         model2 = combo2.get_model()
         keyring = model2[tree_iter2][0]
 
-        profile_name = entry2.get_text()
-        profile_path = entry3.get_text()
+        if entry2 is not None:
+            profile_name = entry2.get_text()
+            profile_path = entry3.get_text()
+        else:
+            profile_name = ''
+            profile_path = ''
 
         value = browser
         if keyring != '':
@@ -6620,7 +6663,8 @@ class OptionsEditWin(GenericEditWin):
 
         # (To avoid confusion, reset the 'Do not load cookies from browser'
         #   checkbutton; the user can re-enable it, if they want)
-        checkbutton.set_active(False)
+        if checkbutton is not None:
+            checkbutton.set_active(False)
 
 
     def setup_files_shortcuts_tab(self, inner_notebook):
@@ -26465,8 +26509,9 @@ class SystemPrefWin(GenericPrefWin):
 
         self.add_label(grid,
             _(
-                'To find an updated list of Invidious mirrors, use any' \
-                + ' search engine!',
+                '<i>For the official list of Invidious mirros, click' \
+                + ' <a href="https://docs.invidious.io/instances/">' \
+                + 'here</a></i>',
             ),
             0, 1, grid_width, 1,
         )
